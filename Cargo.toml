@@ -1,5 +1,5 @@
 [package]
-name = "raylib_ttd_alias_rs"
+name = "raylib_ttf_alias_rs"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 raylib = "3.7.0"
+structopt = "0.3.26"
