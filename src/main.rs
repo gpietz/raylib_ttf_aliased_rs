@@ -1,5 +1,10 @@
+extern crate core;
+
 mod cli_args;
 mod data;
+mod file_utils;
+mod raylib_utils;
+mod string_utils;
 
 use std::borrow::BorrowMut;
 use std::fs::read_to_string;
@@ -10,19 +15,15 @@ use raylib::drawing::RaylibDrawHandle;
 use raylib::misc::AsF32;
 use raylib::prelude::{Font, RaylibDraw, Vector2};
 use raylib::text::{FontLoadEx, measure_text_ex};
+use regex::Regex;
+use lazy_static::lazy_static;
 use crate::data::{AppData, TextLine, TextLineVector};
 
 const SCREEN_WIDTH: i32 = 1024;
 const SCREEN_HEIGHT: i32 = 768;
 const MOVE_SPEED: f32 = 1.0;
 
-fn split_text_by_newlines(text: &str) -> TextLineVector {
-    let mut lines = Vec::new();
-    for l in text.split("\n") {
-        lines.push(TextLine::new(l.trim()));
-    }
-    lines
-}
+
 
 fn get_text_measure(text: &str, font: &Font, font_size: f32) -> Vector2 {
     measure_text_ex(font, text, font_size, 0.0)
@@ -87,81 +88,28 @@ fn render(draw_handle: &mut RaylibDrawHandle, text_lines: &mut TextLineVector, f
     }
 }
 
-/// Returns the string representation of an pathbuf.
-fn get_path_str(path: &PathBuf) -> String {
-    let full_path = path.canonicalize();
-    if let Ok(cp) = full_path {
-        return cp.as_path().display().to_string();
-    }
-    path.as_path().display().to_string()
-}
-
-fn process_cli_args(app_data: &mut AppData) {
-    //-- textfile
-    if let Some(filename) = &app_data.cli_args.text_file {
-        if !filename.exists() {
-            eprintln!("File not found: {:?}", get_path_str(&filename));
-        } else {
-            println!("Loading text file: {:?}", get_path_str(&filename));
-            let file_read_result = read_to_string(filename.clone());
-            if let Ok(content) = file_read_result {
-                for line in split_text_by_newlines(content.as_str()) {
-                    app_data.text_lines.push(line);
-                }
-            } else {
-                eprintln!("Error loading text file: {:?}", get_path_str(&filename))
-            }
-        }
-    }
-    //-- font size
-    if let Some(font_size) = app_data.cli_args.font_size {
-        if font_size > 0 && font_size < 180 {
-            app_data.font_size = font_size;
-        }
-    }
+/// Creates a raylib color from string.
+fn get_color_from_str(str: &str) -> Option<&str> {
+    None
 }
 
 fn main() {
     // Process command line args
     let mut app_data = AppData::new();
-    process_cli_args(&mut app_data);
 
     // Initialize window
     let (mut raylib_handle, raylib_thread) = raylib::init()
         .size(SCREEN_WIDTH, SCREEN_HEIGHT)
-        .title("raylib aliased font scroll example rust")
+        .title("raylib
+        } aliased font scroll example rust")
         .build();
     raylib_handle.set_target_fps(60);
 
     // Load font
     let mut font = raylib_handle.load_font_ex(
-        &raylib_thread, "assets/Trueno-wml2.otf".into(), app_data.font_size, FontLoadEx::Default(0),
+        &raylib_thread, "assets/Trueno-wml2.otf".into(), app_data.font_size, FontLoadEx::Default(0)
     ).expect("Failed to load font");
     generate_font_mipmaps(&mut font);
-
-    // Convert text to vector of strings/textlines
-    if app_data.text_lines.len() == 0 {
-        let msg: &str = "Lorem ipsum dolor sit amet,
-                         consetetur sadipscing elitr,
-                         sed diam nonumy eirmod tempor
-                         invidunt ut labore et dolore
-                         magna aliquyam erat, sed diam
-                         voluptua. At vero eos et accusam
-                         et justo duo dolores et ea rebum.
-                         Stet clita kasd gubergren, no sea
-                         takimata sanctus est Lorem ipsum
-                         dolor sit amet. Lorem ipsum dolor
-                         sit amet, consetetur sadipscing elitr,
-                         sed diam nonumy eirmod tempor invidunt
-                         ut labore et dolore magna aliquyam erat,
-                         sed diam voluptua. At vero eos et
-                         accusam et justo duo dolores et ea
-                         rebum. Stet clita kasd gubergren, no
-                         sea takimata sanctus est Lorem ipsum
-                         dolor sit amet.
-                         ****";
-        app_data.text_lines = split_text_by_newlines(msg);
-    }
 
     // get text dimension of each line
     let font_size = app_data.font_size.as_f32();
@@ -174,7 +122,7 @@ fn main() {
     // Tada.... the mainloop
     while !raylib_handle.window_should_close() {
         let mut draw_handle = raylib_handle.begin_drawing(&raylib_thread);
-        draw_handle.clear_background(Color::GREEN);
+        draw_handle.clear_background(app_data.bgcolor);
         render(&mut draw_handle, &mut app_data.text_lines, &font);
     }
 }
