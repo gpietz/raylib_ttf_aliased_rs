@@ -12,9 +12,13 @@ pub struct CliArgs{
     #[structopt(short = "f", long="fontsize")]
     pub font_size: Option<i32>,
 
-    /// Background color in hex or RGB format (examples: "#00FF00"/ "000,255,000")
+    /// Background color in hex or RGB format (examples: "#00FF00"/ "000-255-000")
     #[structopt(short = "b", long = "bgcolor")]
     pub bgcolor: Option<String>,
+
+    /// Text color in hex or RGB format (examples: "#00FF00"/ "000-255-000")
+    #[structopt(short = "c", long = "fgcolor")]
+    pub fgcolor: Option<String>
 }
 
 impl CliArgs {

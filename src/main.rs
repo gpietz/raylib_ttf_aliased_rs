@@ -36,7 +36,11 @@ fn generate_font_mipmaps(font: &mut Font) {
     }
 }
 
-fn render(draw_handle: &mut RaylibDrawHandle, text_lines: &mut TextLineVector, font: &Font) {
+fn render(draw_handle: &mut RaylibDrawHandle,
+          text_lines: &mut TextLineVector,
+          text_color: &Color,
+          font: &Font,
+) {
     // Get real width and height of screen
     let screen_width = draw_handle.get_screen_width();
     let screen_height = draw_handle.get_screen_height();
@@ -69,7 +73,7 @@ fn render(draw_handle: &mut RaylibDrawHandle, text_lines: &mut TextLineVector, f
             text_position.x = screen_width.as_f32() / 2.0 - tl.line_width / 2.0;
             text_position.y = tl.line_offset.unwrap();
             draw_handle.draw_text_ex(&font, tl.line.as_str(), text_position,
-                                     font.baseSize.as_f32(), 0.0, Color::WHITE);
+                                     font.baseSize.as_f32(), 0.0, text_color);
         }
 
         prev_line_offset = tl.line_offset.unwrap();
@@ -123,6 +127,6 @@ fn main() {
     while !raylib_handle.window_should_close() {
         let mut draw_handle = raylib_handle.begin_drawing(&raylib_thread);
         draw_handle.clear_background(app_data.bgcolor);
-        render(&mut draw_handle, &mut app_data.text_lines, &font);
+        render(&mut draw_handle, &mut app_data.text_lines, &app_data.fgcolor, &font);
     }
 }

@@ -52,6 +52,7 @@ pub struct AppData {
     pub text_lines: TextLineVector,
     pub font_size: i32,
     pub bgcolor: Color,
+    pub fgcolor: Color,
 }
 
 impl AppData {
@@ -101,12 +102,22 @@ impl AppData {
         }
 
         //-- foreground color
+        let mut foreground_color = Color::WHITE;
+        if let Some(str_color) = &cli_args.fgcolor {
+            if let Some(color) = string_to_color(str_color.as_str()) {
+                foreground_color = color;
+                println!("Using color \"{}\" as foreground color.", str_color);
+            } else {
+                eprintln!("Invalid color format \"{}\" in foreground color!", str_color);
+            }
+        }
 
         Self {
             cli_args,
             text_lines,
             font_size,
-            bgcolor: background_color
+            bgcolor: background_color,
+            fgcolor: foreground_color,
         }
     }
 
@@ -117,4 +128,5 @@ impl AppData {
         }
         lines
     }
+
 }
