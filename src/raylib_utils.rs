@@ -1,6 +1,5 @@
 use raylib::prelude::*;
 use regex::Regex;
-use std::convert::Into;
 
 /// Converts a string in hex or rgb format to color.
 pub(crate) fn string_to_color(s: &str) -> Option<Color> {

@@ -1,29 +1,21 @@
 extern crate core;
 
-mod cli_args;
 mod data;
 mod file_utils;
 mod raylib_utils;
-mod string_utils;
 
 use std::borrow::BorrowMut;
-use std::fs::read_to_string;
-use std::path::PathBuf;
 
 use raylib::color::Color;
 use raylib::drawing::RaylibDrawHandle;
 use raylib::misc::AsF32;
 use raylib::prelude::{Font, RaylibDraw, Vector2};
 use raylib::text::{FontLoadEx, measure_text_ex};
-use regex::Regex;
-use lazy_static::lazy_static;
-use crate::data::{AppData, TextLine, TextLineVector};
+use crate::data::{AppData, TextLineVector};
 
 const SCREEN_WIDTH: i32 = 1024;
 const SCREEN_HEIGHT: i32 = 768;
 const MOVE_SPEED: f32 = 1.0;
-
-
 
 fn get_text_measure(text: &str, font: &Font, font_size: f32) -> Vector2 {
     measure_text_ex(font, text, font_size, 0.0)
@@ -90,11 +82,6 @@ fn render(draw_handle: &mut RaylibDrawHandle,
             }
         }
     }
-}
-
-/// Creates a raylib color from string.
-fn get_color_from_str(str: &str) -> Option<&str> {
-    None
 }
 
 fn main() {

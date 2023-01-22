@@ -1,11 +1,11 @@
+extern crate structopt;
+
+use std::path::PathBuf;
 use std::fs::read_to_string;
-use raylib::color::Color;
-use regex::internal::Input;
 use structopt::StructOpt;
-use crate::cli_args::CliArgs;
+use raylib::color::Color;
 use crate::file_utils::FileUtils;
 use crate::raylib_utils::string_to_color;
-use crate::string_utils::remove_first_last_char;
 
 const MSG: &str = "Lorem ipsum dolor sit amet,
                    consetetur sadipscing elitr,
@@ -26,6 +26,29 @@ const MSG: &str = "Lorem ipsum dolor sit amet,
                    sea takimata sanctus est Lorem ipsum
                    dolor sit amet.
                    ****";
+
+const NAME: &str ="RAYLIB TTF ANTI ALIASED DEMO";
+const ABOUT: &str = "Vertical font scrolling using the raylib library.";
+
+#[derive(StructOpt)]
+#[structopt( name = NAME, about = ABOUT)]
+pub struct CliArgs{
+    /// Name of textfile being loaded and displayed
+    #[structopt(short = "t", long="textfile", parse(from_os_str))]
+    pub text_file: Option<PathBuf>,
+
+    /// The size of the font used to display the text. (Default is 64)
+    #[structopt(short = "f", long="fontsize")]
+    pub font_size: Option<i32>,
+
+    /// Background color in hex or RGB format (examples: "#00FF00"/ "000-255-000")
+    #[structopt(short = "b", long = "bgcolor")]
+    pub bgcolor: Option<String>,
+
+    /// Text color in hex or RGB format (examples: "#00FF00"/ "000-255-000")
+    #[structopt(short = "c", long = "fgcolor")]
+    pub fgcolor: Option<String>
+}
 
 pub struct TextLine {
     pub line: String,
